@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Small Giant Inv CC - Namibian Interactive Hub</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      max-width: 700px;
+      width: 90%;
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      animation: fadeIn 1s ease-out;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #003580; /* Namibian Blue */
+    }
+
+    p {
+      text-align: center;
+      font-size: 1rem;
+      color: #333;
+    }
+
+    button {
+      background-color: #D21034; /* Namibian Red */
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      margin: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #9b0e26;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+      animation: fadeIn 0.6s ease-in;
+    }
+
+    .question {
+      margin: 20px 0;
+    }
+
+    .email-form {
+      margin-top: 20px;
+    }
+
+    input[type="email"] {
+      padding: 10px;
+      width: 100%;
+      border: 2px solid #009543; /* Namibian Green */
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .feedback {
+      color: #D21034;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome, Sir ChizzBoy!</h1>
+    <h2>Small Giant Inv CC | 🇳🇦 Coder Namibian at Heart</h2>
+
+    <!-- Intro Section -->
+    <div id="intro" class="section active">
+      <p>Choose your journey to get started:</p>
+      <button onclick="startQuiz()">🧠 Personality Quiz</button>
+      <button onclick="startAdventure()">🚀 Choose-Your-Path Game</button>
+      <button onclick="startNamibiaQuiz()">🇳🇦 Namibia Knowledge Quiz</button>
+    </div>
+
+    <!-- Personality Quiz -->
+    <div id="quiz" class="section">
+      <h2>What's Your Entrepreneur Style?</h2>
+      <div class="question" id="quizQ"></div>
+      <div id="quizOptions"></div>
+    </div>
+
+    <!-- Choose Your Path -->
+    <div id="adventure" class="section">
+      <h2>🚀 Your Startup Journey</h2>
+      <div class="question" id="storyText"></div>
+      <div id="storyOptions"></div>
+    </div>
+
+    <!-- Namibia Quiz -->
+    <div id="namibiaQuiz" class="section">
+      <h2>🇳🇦 Namibian Knowledge Quiz</h2>
+      <div class="question" id="namibiaQ"></div>
+      <div id="namibiaOptions"></div>
+      <div class="feedback" id="namibiaFeedback"></div>
+    </div>
+
+    <!-- Email Form -->
+    <div id="result" class="section">
+      <h2>🎁 Get Your Personalized Report</h2>
+      <p>Enter your email to receive your full results and insights.</p>
+      <div class="email-form">
+        <input type="email" id="userEmail" placeholder="you@example.com" />
+        <button onclick="submitEmail()">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Helper Function ---
+    function switchSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    // --- Personality Quiz Logic ---
+    const quizData = [
+      {
+        q: "1. How do you approach challenges?",
+        options: ["Analytically", "Creatively", "Collaboratively"]
+      },
+      {
+        q: "2. Your ideal workspace is...",
+        options: ["Quiet and focused", "Buzzing and creative", "Flexible, anywhere"]
+      },
+      {
+        q: "3. Your biggest strength?",
+        options: ["Planning", "Risk-taking", "Networking"]
+      }
+    ];
+    let quizStep = 0;
+    let quizAnswers = [];
+
+    function startQuiz() {
+      quizStep = 0;
+      quizAnswers = [];
+      switchSection('quiz');
+      showQuizQuestion();
+    }
+
+    function showQuizQuestion() {
+      const current = quizData[quizStep];
+      document.getElementById('quizQ').innerText = current.q;
+      const optionsDiv = document.getElementById('quizOptions');
+      optionsDiv.innerHTML = '';
+      current.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.innerText = opt;
+        btn.onclick = () => {
+          quizAnswers.push(opt);
+          quizStep++;
+          if (quizStep < quizData.length) {
+            showQuizQuestion();
+          } else {
+            switchSection('result');
+          }
+        };
+        optionsDiv.appendChild(btn);
+      });
+    }
+
+    // --- Choose-Your-Path Logic ---
+    const storyData = {
+      start: {
+        text: "You're launching a new venture. What's your first step?",
+        options: [
+          { label: "Build a product", next: "product" },
+          { label: "Research the market", next: "research" }
+        ]
+      },
+      product: {
+        text: "You built a prototype! What's next?",
+        options: [
+          { label: "Pitch to investors", next: "investors" },
+          { label: "Test with users", next: "users" }
+        ]
+      },
+      research: {
+        text: "You found a niche. What’s your next step?",
+        options: [
+          { label: "Create a website", next: "website" },
+          { label: "Talk to customers", next: "customers" }
+        ]
+      },
+      investors: {
+        text: "Investors are impressed! Time to scale up! 💼",
+        options: [{ label: "Finish", next: "end" }]
+      },
+      users: {
+        text: "Users love it! You're on to something big! 🚀",
+        options: [{ label: "Finish", next: "end" }]
+      },
+      website: {
+        text: "Your site is live. What's next?",
+        options: [{ label: "Finish", next: "end" }]
+      },
+      customers: {
+        text: "Great feedback! Product improved. 🎯",
+        options: [{ label: "Finish", next: "end" }]
+      },
+      end: {
+        text: "🎉 You've completed your path! Ready for your personalized report?",
+        options: []
+      }
+    };
+
+    let currentStep = 'start';
+
+    function startAdventure() {
+      currentStep = 'start';
+      switchSection('adventure');
+      showStoryStep(currentStep);
+    }
+
+    function showStoryStep(step) {
+      const data = storyData[step];
+      document.getElementById('storyText').innerText = data.text;
+      const optionsDiv = document.getElementById('storyOptions');
+      optionsDiv.innerHTML = '';
+      data.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.innerText = opt.label;
+        btn.onclick = () => {
+          if (opt.next === 'end') {
+            switchSection('result');
+          } else {
+            showStoryStep(opt.next);
+          }
+        };
+        optionsDiv.appendChild(btn);
+      });
+    }
+
+    // --- Namibia Quiz Logic ---
+    const namibiaQuestions = [
+      {
+        q: "Who was Namibia’s first president?",
+        correct: "Sam Nujoma",
+        options: ["Hifikepunye Pohamba", "Sam Nujoma", "Hage Geingob"]
+      },
+      {
+        q: "What is the capital city of Namibia?",
+        correct: "Windhoek",
+        options: ["Swakopmund", "Windhoek", "Walvis Bay"]
+      },
+      {
+        q: "Which desert is in Namibia?",
+        correct: "Namib",
+        options: ["Sahara", "Kalahari", "Namib"]
+      }
+    ];
+    let namibiaIndex = 0;
+
+    function startNamibiaQuiz() {
+      namibiaIndex = 0;
+      switchSection('namibiaQuiz');
+      showNamibiaQuestion();
+    }
+
+    function showNamibiaQuestion() {
+      const q = namibiaQuestions[namibiaIndex];
+      document.getElementById('namibiaQ').innerText = q.q;
+      const optionsDiv = document.getElementById('namibiaOptions');
+      const feedback = document.getElementById('namibiaFeedback');
+      feedback.innerText = '';
+      optionsDiv.innerHTML = '';
+      q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.innerText = opt;
+        btn.onclick = () => {
+          if (opt === q.correct) {
+            namibiaIndex++;
+            if (namibiaIndex < namibiaQuestions.length) {
+              showNamibiaQuestion();
+            } else {
+              switchSection('result');
+            }
+          } else {
+            feedback.innerText = "❌ Try again!";
+          }
+        };
+        optionsDiv.appendChild(btn);
+      });
+    }
+
+    // --- Email Submit ---
+    function submitEmail() {
+      const email = document.getElementById('userEmail').value;
+      if (email && email.includes('@')) {
+        alert(`🎉 Thank you, Sir ChizzBoy! Your report will be sent to ${email}`);
+        document.getElementById('result').innerHTML = "<h2>You're all set!</h2><p>Check your inbox soon. 🇳🇦</p>";
+      } else {
+        alert("Please enter a valid email address.");
+      }
+    }
+  </script>
+</body>
+</html>
